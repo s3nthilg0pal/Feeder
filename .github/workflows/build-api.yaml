@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  IMAGE_NAME: feederApi
+  IMAGE_NAME: feeder-api
   REGISTRY: ghcr.io
   OWNER: ${{ github.repository_owner }}
 
