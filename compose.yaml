@@ -1,0 +1,6 @@
+﻿services:
+  feeder.apiservice:
+    image: feeder.apiservice
+    build:
+      context: .
+      dockerfile: Feeder.ApiService/Dockerfile
