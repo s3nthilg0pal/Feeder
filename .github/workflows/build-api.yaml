@@ -13,9 +13,6 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./Feeder.ApiService
     permissions:
       contents: read
       packages: write
