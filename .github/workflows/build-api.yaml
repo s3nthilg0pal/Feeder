@@ -1,0 +1,48 @@
+name: Publish to GitHub Container Registry
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  IMAGE_NAME: feedapi
+  GRAPHQL_IMAGE_NAME: feedgraphql
+  REGISTRY: ghcr.io
+  OWNER: ${{ github.repository_owner }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Feeder.ApiService
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0'
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -f Dockerfile.rest -t $REGISTRY/$OWNER/$IMAGE_NAME:latest .
+          docker push $REGISTRY/$OWNER/$IMAGE_NAME:latest
+
+      - name: Build graphql and push Docker image
+        run: |
+          docker build -f Dockerfile.graphql -t $REGISTRY/$OWNER/$GRAPHQL_IMAGE_NAME:latest .
+          docker push $REGISTRY/$OWNER/$GRAPHQL_IMAGE_NAME:latest
